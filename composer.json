@@ -21,10 +21,13 @@
         }
     ],
     "require": {
+        "illuminate/config": "^11.9",
         "illuminate/container": "^11.9",
         "illuminate/contracts": "^11.9",
+        "illuminate/events": "^11.9",
         "illuminate/filesystem": "^11.9",
         "illuminate/http": "^11.9",
+        "illuminate/log": "^11.9",
         "illuminate/support": "^11.9"
     },
     "autoload": {

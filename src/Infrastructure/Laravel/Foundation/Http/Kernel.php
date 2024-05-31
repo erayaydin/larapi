@@ -6,11 +6,11 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use \Illuminate\Contracts\Http\Kernel as HttpKernel;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Facade;
 use Larapi\Infrastructure\Laravel\Contracts\Application;
 use Larapi\Infrastructure\Laravel\Exceptions\ExceptionHandlerNotFoundException;
 use Larapi\Infrastructure\Laravel\Exceptions\NotSupportedMethod;
+use Larapi\Infrastructure\Laravel\Foundation\Bootstrapper\LoadConfiguration;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
@@ -22,6 +22,7 @@ final class Kernel implements HttpKernel
      * @var string[]
      */
     const BOOTSTRAPPERS = [
+        LoadConfiguration::class,
     ];
 
     /**

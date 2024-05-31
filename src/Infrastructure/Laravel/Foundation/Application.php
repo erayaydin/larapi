@@ -5,9 +5,12 @@ namespace Larapi\Infrastructure\Laravel\Foundation;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Container\Container as IlluminateContainer;
+use Illuminate\Contracts\Events\Dispatcher as EventDispatcherContract;
 use Illuminate\Contracts\Foundation\Application as LaravelApplication;
 use Illuminate\Contracts\Http\Kernel as HttpKernel;
+use Illuminate\Events\Dispatcher as EventDispatcher;
 use Illuminate\Http\Request;
+use Illuminate\Log\LogManager;
 use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -17,8 +20,10 @@ use Larapi\Infrastructure\Laravel\Exceptions\ConfigInstanceNotFoundException;
 use Larapi\Infrastructure\Laravel\Exceptions\EnvInstanceNotFoundException;
 use Larapi\Infrastructure\Laravel\Exceptions\HttpKernelNotFoundException;
 use Larapi\Infrastructure\Laravel\Exceptions\NotSupportedMethod;
+use Larapi\Infrastructure\Laravel\Foundation\Bootstrapper\Bootable;
 use Psr\Container\ContainerInterface;
 
+use Psr\Log\LoggerInterface;
 use function Illuminate\Filesystem\join_paths;
 
 use const PHP_SAPI;
@@ -42,6 +47,14 @@ final class Application extends Container implements LarapiApplication, HandlesH
             LaravelApplication::class,
             LarapiApplication::class,
             ContainerInterface::class
+        ],
+        'log' => [
+            LogManager::class,
+            LoggerInterface::class,
+        ],
+        'events' => [
+            EventDispatcher::class,
+            EventDispatcherContract::class,
         ],
     ];
 
@@ -473,7 +486,9 @@ final class Application extends Container implements LarapiApplication, HandlesH
         $this->hasBeenBootstrapped = true;
 
         foreach ($bootstrappers as $bootstrapper) {
-            $this->make($bootstrapper)->bootstrap($this);
+            /** @var Bootable $concrete */
+            $concrete = $this->make($bootstrapper);
+            $concrete->bootstrap($this);
         }
     }
 
