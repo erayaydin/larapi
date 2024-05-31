@@ -7,8 +7,6 @@ use Larapi\Infrastructure\Laravel\Contracts\Application;
 
 final readonly class LoadConfiguration implements Bootable
 {
-    const CONFIG = [];
-
     /**
      * Bootstrap the given application.
      *
@@ -17,6 +15,19 @@ final readonly class LoadConfiguration implements Bootable
      */
     public function bootstrap(Application $app): void
     {
-        $app->instance('config', new Repository(LoadConfiguration::CONFIG));
+        $app->instance('config', new Repository([
+            'logging' => [
+                'default' => 'single',
+
+                'channels' => [
+                    'single' => [
+                        'driver' => 'single',
+                        'path' => $app->storagePath('logs/laravel.log'),
+                        'level' => 'debug',
+                        'replace_placeholders' => true,
+                    ],
+                ],
+            ],
+        ]));
     }
 }
