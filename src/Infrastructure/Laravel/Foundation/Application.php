@@ -6,12 +6,16 @@ use Illuminate\Container\Container;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Container\Container as IlluminateContainer;
 use Illuminate\Contracts\Foundation\Application as LaravelApplication;
+use Illuminate\Contracts\Http\Kernel as HttpKernel;
+use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Larapi\Infrastructure\Laravel\Contracts\Application as LarapiApplication;
+use Larapi\Infrastructure\Laravel\Contracts\HandlesHttp;
 use Larapi\Infrastructure\Laravel\Exceptions\ConfigInstanceNotFoundException;
 use Larapi\Infrastructure\Laravel\Exceptions\EnvInstanceNotFoundException;
+use Larapi\Infrastructure\Laravel\Exceptions\HttpKernelNotFoundException;
 use Larapi\Infrastructure\Laravel\Exceptions\NotSupportedMethod;
 use Psr\Container\ContainerInterface;
 
@@ -19,7 +23,7 @@ use function Illuminate\Filesystem\join_paths;
 
 use const PHP_SAPI;
 
-final class Application extends Container implements LarapiApplication
+final class Application extends Container implements LarapiApplication, HandlesHttp
 {
     /**
      * The Larapi version.
@@ -570,6 +574,28 @@ final class Application extends Container implements LarapiApplication
         foreach ($this->terminatingCallbacks as $callback) {
             $this->call($callback);
         }
+    }
+
+    /**
+     * Handle the incoming HTTP request and send the response to the client.
+     *
+     * @param Request $request
+     * @return void
+     * @throws BindingResolutionException
+     * @throws HttpKernelNotFoundException
+     */
+    public function handleRequest(Request $request): void
+    {
+        if (! $this->bound(HttpKernel::class)) {
+            throw new HttpKernelNotFoundException;
+        }
+
+        /** @var HttpKernel $kernel */
+        $kernel = $this->make(HttpKernel::class);
+
+        $response = $kernel->handle($request)->send();
+
+        $kernel->terminate($request, $response);
     }
 
     /**
