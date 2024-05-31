@@ -1,0 +1,34 @@
+{
+    "name": "erayaydin/larapi",
+    "description": "Laravel API-Only System",
+    "keywords": [
+        "API",
+        "Larapi",
+        "API Starter",
+        "API Framework",
+        "Laravel API"
+    ],
+    "type": "project",
+    "license": "MIT",
+    "support": {
+        "issues": "https://github.com/erayaydin/larapi/issues",
+        "source": "https://github.com/erayaydin/larapi"
+    },
+    "authors": [
+        {
+            "name": "Eray Aydın",
+            "email": "erayaydinn@protonmail.com"
+        }
+    ],
+    "require": {},
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "github-protocols": [
+            "https"
+        ]
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
