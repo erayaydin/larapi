@@ -20,7 +20,17 @@
             "email": "erayaydinn@protonmail.com"
         }
     ],
-    "require": {},
+    "require": {
+        "illuminate/container": "^11.9",
+        "illuminate/contracts": "^11.9",
+        "illuminate/filesystem": "^11.9",
+        "illuminate/support": "^11.9"
+    },
+    "autoload": {
+        "psr-4": {
+            "Larapi\\": "src/"
+        }
+    },
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
